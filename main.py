@@ -17,7 +17,7 @@
 
 import argparse
 import tensorflow as tf
-tf.set_random_seed(228)
+#tf.set_random_seed(228)
 from model import Artgan
 
 def parse_list(str_value):
@@ -31,6 +31,10 @@ def parse_list(str_value):
 parser = argparse.ArgumentParser(description='')
 
 # ========================== GENERAL PARAMETERS ========================= #
+parser.add_argument('--root_dir',
+                    dest='root_dir',
+                    default='./models',
+                    help='Directory that holds the models')
 parser.add_argument('--model_name',
                     dest='model_name',
                     default='model1',
@@ -60,6 +64,10 @@ parser.add_argument('--ptcd',
                     type=str,
                     default=None,
                     help='Path to Places365 training dataset.')
+parser.add_argument('--places',
+                    dest='places_dataset',
+                    action='store_true',
+                    help='Use Places dataset')
 
 
 parser.add_argument('--total_steps',

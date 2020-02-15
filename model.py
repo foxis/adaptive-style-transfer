@@ -35,8 +35,9 @@ import img_augm
 
 class Artgan(object):
     def __init__(self, sess, args):
+        self.places_dataset = args.places_dataset
         self.model_name = args.model_name
-        self.root_dir = './models'
+        self.root_dir = args.root_dir
         self.checkpoint_dir = os.path.join(self.root_dir, self.model_name, 'checkpoint')
         self.checkpoint_long_dir = os.path.join(self.root_dir, self.model_name, 'checkpoint_long')
         self.sample_dir = os.path.join(self.root_dir, self.model_name, 'sample')
@@ -274,7 +275,10 @@ class Artgan(object):
                                        hue_augm_shift=0.05,
                                        saturation_augm_shift=0.05, saturation_augm_scale=0.05,
                                        value_augm_shift=0.05, value_augm_scale=0.05, )
-        content_dataset_places = prepare_dataset.PlacesDataset(path_to_dataset=self.options.path_to_content_dataset)
+        if self.places_dataset:
+            content_dataset_places = prepare_dataset.PlacesDataset(path_to_dataset=self.options.path_to_content_dataset)
+        else:
+            content_dataset_places = prepare_dataset.FlatDataset(path_to_dataset=self.options.path_to_content_dataset)
         art_dataset = prepare_dataset.ArtDataset(path_to_art_dataset=self.options.path_to_art_dataset)
 
 

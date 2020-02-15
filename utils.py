@@ -18,6 +18,7 @@
 from __future__ import division
 import math
 import scipy.misc
+
 from scipy.ndimage.filters import gaussian_filter
 
 import numpy as np

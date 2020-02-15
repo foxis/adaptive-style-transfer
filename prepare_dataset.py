@@ -76,6 +76,56 @@ class ArtDataset():
             queue.put(batch)
 
 
+class FlatDataset():
+    def __init__(self, path_to_dataset):
+
+        self.dataset = [os.path.join(path_to_dataset, x) for x in os.listdir(path_to_dataset)]
+        print("The dataset contains %d images." % len(self.dataset))
+
+    def get_batch(self, augmentor, batch_size=1):
+        """
+        Reads data from dataframe data containing path to images in column 'path' and, in case of dataframe,
+         also containing artist name, technique name, and period of creation for given artist.
+         In case of content images we have only the 'path' column.
+        Args:
+            augmentor: Augmentor object responsible for augmentation pipeline
+            batch_size: size of batch
+        Returns:
+            dictionary with fields: image
+        """
+
+        batch_image = []
+
+        for _ in range(batch_size):
+            image = scipy.misc.imread(name=random.choice(self.dataset), mode='RGB')
+
+            if max(image.shape) > 1800.:
+                image = scipy.misc.imresize(image, size=1800. / max(image.shape))
+            if max(image.shape) < 800:
+                # Resize the smallest side of the image to 800px
+                alpha = 800. / float(min(image.shape))
+                if alpha < 4.:
+                    image = scipy.misc.imresize(image, size=alpha)
+                    image = np.expand_dims(image, axis=0)
+                else:
+                    image = scipy.misc.imresize(image, size=[800, 800])
+
+            if augmentor:
+                batch_image.append(augmentor(image).astype(np.float32))
+            else:
+                batch_image.append((image).astype(np.float32))
+        # Now return a batch in correct form
+        batch_image = np.asarray(batch_image)
+
+        return {"image": batch_image}
+
+    def initialize_batch_worker(self, queue, augmentor, batch_size=1, seed=228):
+        np.random.seed(seed)
+        while True:
+            batch = self.get_batch(augmentor=augmentor, batch_size=batch_size)
+            queue.put(batch)
+
+
 class PlacesDataset():
     categories_names = \
         ['/a/abbey', '/a/arch', '/a/amphitheater', '/a/aqueduct', '/a/arena/rodeo', '/a/athletic_field/outdoor',
