@@ -31,7 +31,7 @@ def parse_list(str_value):
 parser = argparse.ArgumentParser(description='')
 
 # ========================== GENERAL PARAMETERS ========================= #
-parser.add_argument('--root_dir',
+parser.add_argument('--model_root',
                     dest='root_dir',
                     default='./models',
                     help='Directory that holds the models')
